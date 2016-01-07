@@ -3,11 +3,16 @@
     text-align: center;
 }*/
 
+
 html,
 body {
     height: 100%;
-    margin: 0;
-    padding: 0;
+}
+
+.container-fluid,
+.row,
+.col-md-9 {
+    height: 100%;
 }
 
 #map {
