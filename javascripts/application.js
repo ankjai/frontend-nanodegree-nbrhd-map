@@ -17,8 +17,8 @@ function initMap() {
     var service = new google.maps.places.PlacesService(map);
     service.nearbySearch({
         location: sfo,
-        radius: 500,
-        types: ['store']
+        radius: 10000,
+        types: ['restaurant']
     }, callback);
 }
 
