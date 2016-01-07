@@ -3,13 +3,16 @@
 
 <head>
     <title>Neighborhood Map</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="css/main.css">
 </head>
 
 <body>
-    <p>First name: <strong data-bind="text: firstName"></strong></p>
-    <p>Last name: <strong data-bind="text: lastName"></strong></p>
+    <div id="map">
+    </div>
     <script src="javascripts/libs/knockoutjs/knockout-3.4.0.js" type="text/javascript"></script>
     <script src="javascripts/libs/jquery/jquery-2.1.4.min.js" type="text/javascript"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCo449F-wVfaVbN7PG9dG1ygJW2UoJHba0&signed_in=true&libraries=places&callback=initMap" async defer></script>
     <script src="javascripts/application.js" type="text/javascript"></script>
 </body>
 
