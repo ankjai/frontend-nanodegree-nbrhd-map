@@ -25,6 +25,7 @@ function initMap() {
 function callback(results, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
         for (var i = 0; i < results.length; i++) {
+            console.log("result name:" + results[i].name);
             createMarker(results[i]);
         }
     }
@@ -42,3 +43,9 @@ function createMarker(place) {
         infowindow.open(map, this);
     });
 }
+
+function AppViewModel() {
+    // body...
+}
+
+ko.applyBindings(new AppViewModel());
