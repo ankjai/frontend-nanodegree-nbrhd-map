@@ -1,5 +1,6 @@
 var map;
 var infowindow;
+var resultSet = ko.observableArray();
 
 function initMap() {
     var sfo = {
@@ -25,9 +26,11 @@ function initMap() {
 function callback(results, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
         for (var i = 0; i < results.length; i++) {
-            console.log("result name:" + results[i].name);
+            // console.log("result name:" + results[i].name);
+            resultSet.push(results[i]);
             createMarker(results[i]);
         }
+        display();
     }
 }
 
@@ -49,3 +52,10 @@ function AppViewModel() {
 }
 
 ko.applyBindings(new AppViewModel());
+
+
+/* *********TEMP CODE********* */
+function display() {
+    // body...
+    console.log("resultSet length:" + resultSet().length);
+}
