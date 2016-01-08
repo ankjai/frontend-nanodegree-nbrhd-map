@@ -1,6 +1,7 @@
 var map;
 var infowindow;
-var resultSet = ko.observableArray();
+var staticResultSet = [];
+var displayList = ko.observableArray();
 
 function initMap() {
     var sfo = {
@@ -19,15 +20,16 @@ function initMap() {
     service.nearbySearch({
         location: sfo,
         radius: 10000,
-        types: ['restaurant']
+        types: ['food', 'restaurant']
     }, callback);
 }
 
 function callback(results, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
         for (var i = 0; i < results.length; i++) {
-            // console.log("result name:" + results[i].name);
-            resultSet.push(results[i]);
+            // push result in both static and dynamic list
+            staticResultSet[i] = results[i];
+            displayList.push(results[i]);
             createMarker(results[i]);
         }
         display();
@@ -48,7 +50,13 @@ function createMarker(place) {
 }
 
 function AppViewModel() {
-    // body...
+    var self = this;
+    self.keyword = ko.observable("");
+    self.enterSearch = function(data, event) {
+        console.log(data);
+        console.log(event);
+        console.log(self.keyword());
+    }
 }
 
 ko.applyBindings(new AppViewModel());
@@ -57,5 +65,6 @@ ko.applyBindings(new AppViewModel());
 /* *********TEMP CODE********* */
 function display() {
     // body...
-    console.log("resultSet length:" + resultSet().length);
+    console.log("staticResultSet length:" + staticResultSet.length);
+    console.log("displayList length:" + displayList().length);
 }
