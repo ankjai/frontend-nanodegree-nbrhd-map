@@ -56,6 +56,21 @@ function AppViewModel() {
         console.log(data);
         console.log(event);
         console.log(self.keyword());
+
+        function filterList(element, index, array) {
+            console.log("element: " + element);
+            console.log("index: " + index);
+            console.log("array: " + array);
+            if (element.name.includes(self.keyword())) {
+                console.log("true");
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        displayList = staticResultSet.filter(filterList);
+        console.log("displayList now: " + displayList.length);
     }
 }
 
