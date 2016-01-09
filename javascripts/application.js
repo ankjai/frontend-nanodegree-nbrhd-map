@@ -52,37 +52,25 @@ function AppViewModel() {
     self.keyword = ko.observable("");
 
     self.updateList = function(list) {
+        staticResultSet = Array.from(list);
         for (var i = 0; i < list.length; i++) {
-            staticResultSet[i] = list[i];
             self.displayList.push(list[i]);
         };
     }
 
     self.enterSearch = function(data, event) {
-        // console.log(data);
-        console.log(event);
-        console.log("keyword: " + self.keyword());
-
         function filterList(element, index, array) {
-            // console.log("element: " + element);
-            // console.log("index: " + index);
-            // console.log("array: " + array);
-            if (element.name.includes(self.keyword())) {
-                console.log("true");
+            if (element.name.toLowerCase().includes(self.keyword().toLowerCase())) {
                 return true;
             } else {
                 return false;
             }
         }
 
-        var tempArray = staticResultSet.filter(filterList);
-        console.log("tempArray:" + tempArray.length);
-        if (tempArray.length > 0) {
-            self.displayList.removeAll();
-        };
-        for (var i = 0; i < tempArray.length; i++) {
-            // console.log(tempArray[i]);
-            self.displayList.push(tempArray[i]);
+        var filteredList = staticResultSet.filter(filterList);
+        self.displayList.removeAll();
+        for (var i = 0; i < filteredList.length; i++) {
+            self.displayList.push(filteredList[i]);
         };
     }
 }
