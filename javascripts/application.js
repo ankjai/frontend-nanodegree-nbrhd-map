@@ -1,5 +1,6 @@
 var map;
 var infowindow;
+var viewModel = new AppViewModel();
 
 function initMap() {
     var sfo = {
@@ -18,12 +19,13 @@ function initMap() {
     service.nearbySearch({
         location: sfo,
         radius: 10000,
-        types: ['restaurant']
+        types: ['food', 'restaurant']
     }, callback);
 }
 
 function callback(results, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
+        viewModel.updateList(results);
         for (var i = 0; i < results.length; i++) {
             createMarker(results[i]);
         }
@@ -42,3 +44,35 @@ function createMarker(place) {
         infowindow.open(map, this);
     });
 }
+
+function AppViewModel() {
+    var self = this;
+    var staticResultSet = [];
+    self.displayList = ko.observableArray();
+    self.keyword = ko.observable("");
+
+    self.updateList = function(list) {
+        staticResultSet = Array.from(list);
+        for (var i = 0; i < list.length; i++) {
+            self.displayList.push(list[i]);
+        };
+    }
+
+    self.enterSearch = function(data, event) {
+        function filterList(element, index, array) {
+            if (element.name.toLowerCase().includes(self.keyword().toLowerCase())) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        var filteredList = staticResultSet.filter(filterList);
+        self.displayList.removeAll();
+        for (var i = 0; i < filteredList.length; i++) {
+            self.displayList.push(filteredList[i]);
+        };
+    }
+}
+
+ko.applyBindings(viewModel);
