@@ -10,6 +10,7 @@ function AppViewModel() {
     self.keyword = ko.observable("");
     // self.staticArray = new google.maps.places.PlaceResult();
     self.staticArray = [];
+    self.markers = [];
 
 
     // call to google API
@@ -71,16 +72,26 @@ function AppViewModel() {
 
     // create map marker
     self.createMarker = function(place) {
-        var placeLoc = place.geometry.location;
+        // var placeLoc = place.geometry.location;
         var marker = new google.maps.Marker({
             map: self.map,
             position: place.geometry.location
         });
 
+        // add it to markers array
+        self.markers.push(marker);
+
         google.maps.event.addListener(marker, 'click', function() {
             self.infowindow.setContent(place.name);
             self.infowindow.open(self.map, self);
         });
+    }
+
+    // remove marker
+    self.removeMarker = function() {
+        for (var i = 0; i < self.markers.length; i++) {
+            self.markers[i].setMap(null);
+        };
     }
 
     // filter
@@ -96,6 +107,7 @@ function AppViewModel() {
         var filteredList = self.staticArray.filter(filterList);
         console.log("filteredList: " + filteredList.length);
         console.log(filteredList);
+        self.removeMarker();
     }
 }
 
