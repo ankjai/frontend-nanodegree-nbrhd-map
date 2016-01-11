@@ -47,10 +47,10 @@ function AppViewModel() {
         self.infowindow = new google.maps.InfoWindow();
 
         var service = new google.maps.places.PlacesService(self.map);
-        service.nearbySearch({
+        service.textSearch({
             location: sfo,
             radius: 10000,
-            types: ['food', 'restaurant']
+            query: 'restaurants'
         }, self.callback);
     }
 
