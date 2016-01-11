@@ -6,11 +6,10 @@ function AppViewModel() {
 
     self.map;
     self.infowindow;
-    self.displayList = ko.observableArray();
-    self.keyword = ko.observable("");
-    // self.staticArray = new google.maps.places.PlaceResult();
     self.staticArray = [];
     self.markers = [];
+    self.displayList = ko.observableArray();
+    self.keyword = ko.observable("");
 
 
     // call to google API
@@ -58,11 +57,10 @@ function AppViewModel() {
     // callback
     self.callback = function(results, status) {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
-            console.log("results length:" + results.length);
-            for (var i = 0; i < results.length; i++) {
-                self.staticArray[i] = results[i];
-            };
-            console.log("staticArray length:" + self.staticArray.length);
+            // store results in staticArray
+            self.staticArray = results.slice();
+
+            // populate list and markers on initial page load
             for (var i = 0; i < self.staticArray.length; i++) {
                 self.createMarker(self.staticArray[i]);
                 self.displayList.push(self.staticArray[i]);
@@ -72,15 +70,17 @@ function AppViewModel() {
 
     // create map marker
     self.createMarker = function(place) {
-        // var placeLoc = place.geometry.location;
         var marker = new google.maps.Marker({
             map: self.map,
             position: place.geometry.location
         });
 
-        // add it to markers array
+        // on initial page load
+        // store every marker in markers array
         self.markers.push(marker);
 
+        // add click listener on every marker
+        // which displays infowindow
         google.maps.event.addListener(marker, 'click', function() {
             self.infowindow.setContent(place.name);
             self.infowindow.open(self.map, self);
@@ -88,9 +88,9 @@ function AppViewModel() {
     }
 
     // remove marker
-    self.removeMarker = function() {
+    self.setMarker = function(map) {
         for (var i = 0; i < self.markers.length; i++) {
-            self.markers[i].setMap(null);
+            self.markers[i].setMap(map);
         };
     }
 
@@ -104,10 +104,24 @@ function AppViewModel() {
             }
         }
 
-        var filteredList = self.staticArray.filter(filterList);
-        console.log("filteredList: " + filteredList.length);
-        console.log(filteredList);
-        self.removeMarker();
+        // create an array of filtered objects
+        var temp = self.staticArray.filter(filterList);
+
+        try {
+            // empty list on left nav
+            // before filling w/ new filtered values
+            if (self.displayList().length > 0) {
+                self.displayList.removeAll();
+            };
+        } catch (err) {
+            console.error(err);
+        } finally {
+            // update list w/ filtered values
+            for (var i = 0; i < temp.length; i++) {
+                self.displayList.push(temp[i]);
+            };
+        }
+
     }
 }
 
@@ -116,7 +130,3 @@ ko.applyBindings(viewModel);
 
 // make call
 viewModel.apiCall();
-
-// display list and map markers
-console.log("display");
-// viewModel.firstDisplay();
