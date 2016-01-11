@@ -83,7 +83,7 @@ function AppViewModel() {
         // which displays infowindow
         google.maps.event.addListener(marker, 'click', function() {
             self.infowindow.setContent(place.name);
-            self.infowindow.open(self.map, self);
+            self.infowindow.open(self.map, this);
         });
     }
 
