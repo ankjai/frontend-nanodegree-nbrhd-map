@@ -44,7 +44,7 @@ function AppViewModel() {
             zoom: 13
         });
 
-        infowindow = new google.maps.InfoWindow();
+        self.infowindow = new google.maps.InfoWindow();
 
         var service = new google.maps.places.PlacesService(self.map);
         service.nearbySearch({
@@ -88,9 +88,9 @@ function AppViewModel() {
     }
 
     // remove marker
-    self.setMarker = function(map) {
+    self.setMarker = function() {
         for (var i = 0; i < self.markers.length; i++) {
-            self.markers[i].setMap(map);
+            self.markers[i].setMap(null);
         };
     }
 
@@ -108,6 +108,9 @@ function AppViewModel() {
         var temp = self.staticArray.filter(filterList);
 
         try {
+            // unset all markers on map
+            self.setMarker();
+
             // empty list on left nav
             // before filling w/ new filtered values
             if (self.displayList().length > 0) {
@@ -118,6 +121,7 @@ function AppViewModel() {
         } finally {
             // update list w/ filtered values
             for (var i = 0; i < temp.length; i++) {
+                self.createMarker(temp[i]);
                 self.displayList.push(temp[i]);
             };
         }
