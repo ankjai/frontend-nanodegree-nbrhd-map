@@ -1,3 +1,4 @@
+var viewModel = new AppViewModel();
 var map;
 var infowindow;
 var restaurantsArray = [];
@@ -12,10 +13,19 @@ function AppViewModel() {
 
     self.displayList = ko.observableArray();
     self.keyword = ko.observable("");
+
+    // update
+    self.updateList = function() {
+        console.log('updateList');
+        for (var i = 0; i < restaurantsArray.length; i++) {
+            self.displayList.push(restaurantsArray[i].google);
+        };
+        console.log("length:" + self.displayList().length);
+    }
 }
 
 // Activate KO
-ko.applyBindings(new AppViewModel());
+ko.applyBindings(viewModel);
 
 /**
  * [makeMap description]
@@ -76,6 +86,10 @@ function callback(results, status) {
             console.log(results[i]);
             getDetailsFrom4SQ(results[i]);
         };
+
+        // create market
+        // update list async
+        viewModel.updateList();
     }
 }
 
@@ -100,6 +114,12 @@ function getDetailsFrom4SQ(place) {
     apiCall(url, 'GET', 'json', data, buildLocDetailsObj, place);
 }
 
+/**
+ * [buildLocDetailsObj description]
+ * @param  {[type]} place   [description]
+ * @param  {[type]} results [description]
+ * @return {[type]}         [description]
+ */
 function buildLocDetailsObj(place, results) {
     console.log('buildLocDetailsObj');
     console.log(place);
