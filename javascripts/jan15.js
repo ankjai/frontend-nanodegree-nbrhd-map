@@ -21,6 +21,49 @@ function AppViewModel() {
         self.displayList.push(googlePlace);
         // console.log("length:" + self.displayList().length);
     }
+
+    // filter
+    self.enterSearch = function(data, event) {
+        // console.log(data);
+        // console.log(event);
+
+        function filterList(element, index, array) {
+            // console.log(element);
+            if (element.google.name.toLowerCase().includes(self.keyword().toLowerCase())) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        var temp = restaurantsArray.filter(filterList);
+        console.log(temp);
+        var markerTemp = markerArray.filter(filterList);
+        console.log(markerTemp);
+        console.log(markerArray.length);
+
+        try {
+            // unset all markers on map
+            for (var i = 0; i < markerArray.length; i++) {
+                markerArray[i].marker.setMap(null);
+            };
+
+            // empty list on left nav
+            // before filling w/ new filtered values
+            if (self.displayList().length > 0) {
+                self.displayList.removeAll();
+            };
+        } catch (err) {
+            console.error(err);
+        } finally {
+            // update list w/ filtered values
+            for (var i = 0; i < temp.length; i++) {
+                // createMarker(markerTemp[i].google, false);
+                markerTemp[i].marker.setMap(map);
+                self.displayList.push(temp[i].google);
+            };
+        }
+    }
 }
 
 // Activate KO
@@ -83,7 +126,7 @@ function callback(results, status) {
         // first add google 
         for (var i = 0; i < results.length; i++) {
             // console.log(results[i]);
-            createMarker(results[i]);
+            createMarker(results[i], true);
             viewModel.updateList(results[i]);
             getDetailsFrom4SQ(results[i]);
         };
@@ -94,18 +137,20 @@ function callback(results, status) {
     }
 }
 
-function createMarker(googlePlace) {
+function createMarker(googlePlace, updateMarkerArray) {
     var marker = new google.maps.Marker({
         map: map,
         position: googlePlace.geometry.location
     });
 
-    var markerList = {};
-    markerList.googlePlace = googlePlace;
-    markerList.marker = marker;
+    if (updateMarkerArray) {
+        var markerList = {};
+        markerList.google = googlePlace;
+        markerList.marker = marker;
 
-    markerArray.push(markerList);
-    // console.log(markerArray);
+        markerArray.push(markerList);
+        // console.log(markerArray);
+    };
 }
 
 /**
@@ -154,7 +199,7 @@ function markerInfoWindow() {
     for (var i = 0; i < markerArray.length; i++) {
         let j = i;
         let tempMarker = markerArray[j].marker;
-        let tempPlaceName = markerArray[j].googlePlace.name;
+        let tempPlaceName = markerArray[j].google.name;
 
         google.maps.event.addListener(tempMarker, 'click', function() {
             infowindow.setContent(tempPlaceName);
