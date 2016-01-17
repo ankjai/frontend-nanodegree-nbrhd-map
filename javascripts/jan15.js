@@ -2,12 +2,13 @@ var viewModel = new AppViewModel();
 var map;
 var infowindow;
 var restaurantsArray = [];
+var markerArray = [];
 
 /**
  * [AppViewModel description]
  */
 function AppViewModel() {
-    console.log("AppViewModel");
+    // console.log("AppViewModel");
 
     var self = this;
 
@@ -15,12 +16,10 @@ function AppViewModel() {
     self.keyword = ko.observable("");
 
     // update
-    self.updateList = function() {
-        console.log('updateList');
-        for (var i = 0; i < restaurantsArray.length; i++) {
-            self.displayList.push(restaurantsArray[i].google);
-        };
-        console.log("length:" + self.displayList().length);
+    self.updateList = function(googlePlace) {
+        // console.log('updateList');
+        self.displayList.push(googlePlace);
+        // console.log("length:" + self.displayList().length);
     }
 }
 
@@ -32,7 +31,7 @@ ko.applyBindings(viewModel);
  * @return {[type]} [description]
  */
 function makeMap() {
-    console.log("makeMap");
+    // console.log("makeMap");
 
     var url = 'https://maps.googleapis.com/maps/api/js';
     var data = {
@@ -51,7 +50,7 @@ function makeMap() {
  * @return {[type]} [description]
  */
 function initMap() {
-    console.log('initMap');
+    // console.log('initMap');
     var sfo = {
         lat: 37.773972,
         lng: -122.431297
@@ -79,18 +78,34 @@ function initMap() {
  * @return {Function}         [description]
  */
 function callback(results, status) {
-    console.log("callback");
+    // console.log("callback");
     if (status === google.maps.places.PlacesServiceStatus.OK) {
-        // make 4square calls
+        // first add google 
         for (var i = 0; i < results.length; i++) {
-            console.log(results[i]);
+            // console.log(results[i]);
+            createMarker(results[i]);
+            viewModel.updateList(results[i]);
             getDetailsFrom4SQ(results[i]);
         };
 
-        // create market
-        // update list async
-        viewModel.updateList();
+        // timeout to retrieve all data
+        // setTimeout(markerInfoWindow, 500);
+        markerInfoWindow();
     }
+}
+
+function createMarker(googlePlace) {
+    var marker = new google.maps.Marker({
+        map: map,
+        position: googlePlace.geometry.location
+    });
+
+    var markerList = {};
+    markerList.googlePlace = googlePlace;
+    markerList.marker = marker;
+
+    markerArray.push(markerList);
+    // console.log(markerArray);
 }
 
 /**
@@ -99,7 +114,7 @@ function callback(results, status) {
  * @return {[type]}       [description]
  */
 function getDetailsFrom4SQ(place) {
-    console.log("getDetailsFrom4SQ");
+    // console.log("getDetailsFrom4SQ");
 
     var url = 'https://api.foursquare.com/v2/venues/search';
     var data = {
@@ -121,17 +136,31 @@ function getDetailsFrom4SQ(place) {
  * @return {[type]}         [description]
  */
 function buildLocDetailsObj(place, results) {
-    console.log('buildLocDetailsObj');
-    console.log(place);
-    console.log(results.response);
+    // console.log('buildLocDetailsObj');
+    // console.log(place);
+    // console.log(results.response);
     var restaurantsList = {};
     restaurantsList.google = place;
     restaurantsList.foursquare = results.response;
 
     restaurantsArray.push(restaurantsList);
 
-    console.log(restaurantsArray.length);
-    console.log(restaurantsArray);
+    // console.log(restaurantsArray.length);
+    // console.log(restaurantsArray);
+}
+
+function markerInfoWindow() {
+    // console.log("markerInfoWindow");
+    for (var i = 0; i < markerArray.length; i++) {
+        let j = i;
+        let tempMarker = markerArray[j].marker;
+        let tempPlaceName = markerArray[j].googlePlace.name;
+
+        google.maps.event.addListener(tempMarker, 'click', function() {
+            infowindow.setContent(tempPlaceName);
+            infowindow.open(map, tempMarker);
+        });
+    };
 }
 
 // initiate
