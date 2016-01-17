@@ -116,7 +116,7 @@ function callback(results, status) {
         };
 
         // timeout to retrieve all data
-        setTimeout(markerInfoWindow, 500);
+        setTimeout(markerInfoWindow, 1000);
         // markerInfoWindow();
     }
 }
@@ -168,13 +168,28 @@ function buildLocDetailsObj(place, results) {
 }
 
 function markerInfoWindow() {
+    console.log(restaurantsArray);
     for (var i = 0; i < markerArray.length; i++) {
         let j = i;
+
+        // find this google loc's 4sq obj
+        let foursquareObj;
+        for (var k = 0; k < restaurantsArray.length; k++) {
+            if (restaurantsArray[k].google.name === markerArray[j].google.name) {
+                foursquareObj = restaurantsArray[k].foursquare;
+                break;
+            };
+        };
+
+        let contentString = '<div>' +
+            '<p>' + markerArray[j].google.name + '</p>' +
+            '<p>' + foursquareObj.venues[0].url + '</p>' +
+            '</div>';
         let tempMarker = markerArray[j].marker;
-        let tempPlaceName = markerArray[j].google.name;
+        // let tempPlaceName = markerArray[j].google.name;
 
         google.maps.event.addListener(tempMarker, 'click', function() {
-            infowindow.setContent(tempPlaceName);
+            infowindow.setContent(contentString);
             infowindow.open(map, tempMarker);
         });
     };
