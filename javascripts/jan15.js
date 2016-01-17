@@ -8,8 +8,6 @@ var markerArray = [];
  * [AppViewModel description]
  */
 function AppViewModel() {
-    // console.log("AppViewModel");
-
     var self = this;
 
     self.displayList = ko.observableArray();
@@ -17,18 +15,12 @@ function AppViewModel() {
 
     // update
     self.updateList = function(googlePlace) {
-        // console.log('updateList');
         self.displayList.push(googlePlace);
-        // console.log("length:" + self.displayList().length);
     }
 
     // filter
     self.enterSearch = function(data, event) {
-        // console.log(data);
-        // console.log(event);
-
         function filterList(element, index, array) {
-            // console.log(element);
             if (element.google.name.toLowerCase().includes(self.keyword().toLowerCase())) {
                 return true;
             } else {
@@ -37,10 +29,7 @@ function AppViewModel() {
         }
 
         var temp = restaurantsArray.filter(filterList);
-        console.log(temp);
         var markerTemp = markerArray.filter(filterList);
-        console.log(markerTemp);
-        console.log(markerArray.length);
 
         try {
             // unset all markers on map
@@ -74,8 +63,6 @@ ko.applyBindings(viewModel);
  * @return {[type]} [description]
  */
 function makeMap() {
-    // console.log("makeMap");
-
     var url = 'https://maps.googleapis.com/maps/api/js';
     var data = {
         key: 'AIzaSyCo449F-wVfaVbN7PG9dG1ygJW2UoJHba0',
@@ -93,7 +80,6 @@ function makeMap() {
  * @return {[type]} [description]
  */
 function initMap() {
-    // console.log('initMap');
     var sfo = {
         lat: 37.773972,
         lng: -122.431297
@@ -121,19 +107,17 @@ function initMap() {
  * @return {Function}         [description]
  */
 function callback(results, status) {
-    // console.log("callback");
     if (status === google.maps.places.PlacesServiceStatus.OK) {
         // first add google 
         for (var i = 0; i < results.length; i++) {
-            // console.log(results[i]);
             createMarker(results[i], true);
             viewModel.updateList(results[i]);
             getDetailsFrom4SQ(results[i]);
         };
 
         // timeout to retrieve all data
-        // setTimeout(markerInfoWindow, 500);
-        markerInfoWindow();
+        setTimeout(markerInfoWindow, 500);
+        // markerInfoWindow();
     }
 }
 
@@ -147,9 +131,7 @@ function createMarker(googlePlace, updateMarkerArray) {
         var markerList = {};
         markerList.google = googlePlace;
         markerList.marker = marker;
-
         markerArray.push(markerList);
-        // console.log(markerArray);
     };
 }
 
@@ -159,8 +141,6 @@ function createMarker(googlePlace, updateMarkerArray) {
  * @return {[type]}       [description]
  */
 function getDetailsFrom4SQ(place) {
-    // console.log("getDetailsFrom4SQ");
-
     var url = 'https://api.foursquare.com/v2/venues/search';
     var data = {
         client_id: 'ZYRAEHGI0G5Z2A3ESQXA0SFT24GW0X00H3MQHZMCWCEHRGO4',
@@ -181,21 +161,13 @@ function getDetailsFrom4SQ(place) {
  * @return {[type]}         [description]
  */
 function buildLocDetailsObj(place, results) {
-    // console.log('buildLocDetailsObj');
-    // console.log(place);
-    // console.log(results.response);
     var restaurantsList = {};
     restaurantsList.google = place;
     restaurantsList.foursquare = results.response;
-
     restaurantsArray.push(restaurantsList);
-
-    // console.log(restaurantsArray.length);
-    // console.log(restaurantsArray);
 }
 
 function markerInfoWindow() {
-    // console.log("markerInfoWindow");
     for (var i = 0; i < markerArray.length; i++) {
         let j = i;
         let tempMarker = markerArray[j].marker;
