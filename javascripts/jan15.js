@@ -181,9 +181,12 @@ function markerInfoWindow() {
             };
         };
 
-        let contentString = '<div>' +
-            '<p>' + markerArray[j].google.name + '</p>' +
-            '<p>' + foursquareObj.venues[0].url + '</p>' +
+        let contentString = '<div id="infowindow">' +
+            '<div id="infoUpper"><div id="infoUpperLeft"><img id="icon" src="' + restaurantsArray[j].google.icon + '" alt="icon"></div>' +
+            '<div id="infoUpperRight"><h3>' + foursquareObj.venues[0].name + '</h3><div id="venueDetails01"><div id="venueScore"><div>' + restaurantsArray[j].google.rating + '</div></div><div id="venueAddrCusine"><h5>' + restaurantsArray[j].google.formatted_address + '</h5><h6>' + foursquareObj.venues[0].categories[0].name + '</h6></div></div></div></div>' +
+            '<hr>' +
+            '<div id="infoLower"><div id="infoLowerLeft"><a href="tel:' + foursquareObj.venues[0].contact.phone + '">' + foursquareObj.venues[0].contact.formattedPhone + '</a></div>' +
+            '<div id="infoLowerRight"><a href="' + foursquareObj.venues[0].menu.url + '">View Menu</a></div></div>' +
             '</div>';
         let tempMarker = markerArray[j].marker;
         // let tempPlaceName = markerArray[j].google.name;

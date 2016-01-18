@@ -3,7 +3,6 @@
     text-align: center;
 }*/
 
-
 html,
 body {
     height: 100%;
@@ -17,4 +16,42 @@ body {
 
 #map {
     height: 100%;
+}
+
+#infowindow * {
+    border: solid black 1px !important;
+    /*text-align: center;*/
+    /*width: 100%;*/
+    overflow: hidden;
+    margin: 0px;
+}
+
+#infoUpperLeft,
+#infoLowerLeft,
+#venueScore {
+    float: left;
+}
+
+#infoUpperLeft img {
+    width: 50px;
+}
+
+#infoUpperRight {
+    margin-left: 51px;
+}
+
+#venueScore {
+    width: 20px;
+}
+
+#venueAddrCusine {
+    margin-left: 25px;
+}
+
+#infoLowerLeft {
+    width: 50%;
+}
+
+#infoLowerRight {
+    margin-left: 50%;
 }
