@@ -19,11 +19,12 @@ body {
 }
 
 #infowindow * {
-    border: solid black 1px !important;
+    /*border: solid black 1px !important;*/
     /*text-align: center;*/
     /*width: 100%;*/
     overflow: hidden;
-    margin: 0px;
+    margin: 5px;
+    background-color: #efeff4;
 }
 
 #infoUpperLeft,
@@ -41,11 +42,20 @@ body {
 }
 
 #venueScore {
-    width: 20px;
+    width: 30px;
+    background-color: #73cf42;
+}
+
+#venueScore div {
+    background-color: #73cf42;
 }
 
 #venueAddrCusine {
-    margin-left: 25px;
+    margin-left: 35px;
+}
+
+#infoLower {
+    text-align: center;
 }
 
 #infoLowerLeft {
