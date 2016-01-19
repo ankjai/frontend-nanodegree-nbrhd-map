@@ -45,10 +45,24 @@ function AppViewModel() {
         } catch (err) {
             console.error(err);
         } finally {
-            // update list w/ filtered values
-            for (var i = 0; i < restaurantsArrayTemp.length; i++) {
-                markerArrayTemp[i].marker.setMap(map);
-                self.displayList.push(restaurantsArrayTemp[i].google);
+            // iterate over markerArrayTemp and locate correct googleObj
+            for (var i = 0; i < markerArrayTemp.length; i++) {
+                // markerArrayTemp[i].marker.setMap(map);
+                var googleObj;
+                var markerObj;
+                for (var k = 0; k < restaurantsArrayTemp.length; k++) {
+                    if (restaurantsArrayTemp[k].google.name === markerArrayTemp[i].google.name) {
+                        googleObj = restaurantsArrayTemp[k].google;
+                        markerObj = markerArrayTemp[i].marker;
+                        break;
+                    };
+                };
+                // update filtered list
+                self.displayList.push(googleObj);
+                // set filtered marker
+                markerObj.setMap(map);
+                // trigger marker click event on 'li' click event
+                addLiListener(markerObj, googleObj.name);
             };
         }
     }
@@ -115,7 +129,7 @@ function callback(results, status) {
         };
 
         // timeout to retrieve all data
-        setTimeout(markerInfoWindow, 1000);
+        setTimeout(markerInfoWindow, 1500);
         // markerInfoWindow();
     }
 }
@@ -168,53 +182,53 @@ function buildLocDetailsObj(place, results) {
 }
 
 function markerInfoWindow() {
-    console.log(restaurantsArray);
+    // console.log(restaurantsArray);
     for (var i = 0; i < markerArray.length; i++) {
         let j = i;
 
         // find this google loc's 4sq obj
         let foursquareObj;
+        let googleObj;
+        let markerObj;
         for (var k = 0; k < restaurantsArray.length; k++) {
             if (restaurantsArray[k].google.name === markerArray[j].google.name) {
                 foursquareObj = restaurantsArray[k].foursquare;
+                googleObj = restaurantsArray[k].google;
+                markerObj = markerArray[j].marker;
                 break;
             };
         };
 
         let contentString = '<div id="infowindow">' +
-            '<div id="infoUpper"><div id="infoUpperLeft"><img id="icon" src="' + restaurantsArray[j].google.icon + '" alt="icon"></div>' +
-            '<div id="infoUpperRight"><h3>' + foursquareObj.venues[0].name + '</h3><div id="venueDetails01"><div id="venueScore"><div>' + restaurantsArray[j].google.rating + '</div></div><div id="venueAddrCusine"><h5>' + restaurantsArray[j].google.formatted_address + '</h5><h6>' + foursquareObj.venues[0].categories[0].name + '</h6></div></div></div></div>' +
+            '<div id="infoUpper"><div id="infoUpperLeft"><img id="icon" src="' + googleObj.icon + '" alt="icon"></div>' +
+            '<div id="infoUpperRight"><h3>' + foursquareObj.venues[0].name + '</h3><div id="venueDetails01"><div id="venueScore"><div>' + googleObj.rating + '</div></div><div id="venueAddrCusine"><h5>' + googleObj.formatted_address + '</h5><h6>' + foursquareObj.venues[0].categories[0].name + '</h6></div></div></div></div>' +
             '<hr>' +
             '<div id="infoLower"><div id="infoLowerLeft"><a href="tel:' + foursquareObj.venues[0].contact.phone + '">' + foursquareObj.venues[0].contact.formattedPhone + '</a></div>' +
             '<div id="infoLowerRight"><a href="' + foursquareObj.venues[0].menu.url + '">View Menu</a></div></div>' +
             '</div>';
-        let tempMarker = markerArray[j].marker;
-        // let tempPlaceName = markerArray[j].google.name;
 
-        google.maps.event.addDomListener($('li:contains(' + restaurantsArray[j].google.name + ')').get(0), 'click', function() {
-            console.log("li click");
-            tempMarker.setAnimation(google.maps.Animation.BOUNCE);
+        google.maps.event.addListener(markerObj, 'click', function() {
+            // console.log("click function");
+            markerObj.setAnimation(google.maps.Animation.BOUNCE);
             infowindow.setContent(contentString);
-            infowindow.open(map, tempMarker);
+            infowindow.open(map, markerObj);
 
             setTimeout(function() {
-                tempMarker.setAnimation(null);
+                markerObj.setAnimation(null);
             }, 1400);
         });
 
-        console.log($('li:contains(' + restaurantsArray[j].google.name + ')').get(0));
-
-        google.maps.event.addListener(tempMarker, 'click', function() {
-            console.log("click function");
-            tempMarker.setAnimation(google.maps.Animation.BOUNCE);
-            infowindow.setContent(contentString);
-            infowindow.open(map, tempMarker);
-
-            setTimeout(function() {
-                tempMarker.setAnimation(null);
-            }, 1400);
-        });
+        // trigger marker click event on 'li' click event
+        addLiListener(markerObj, googleObj.name);
     };
+}
+
+function addLiListener(marker, locName) {
+    // console.log(locName);
+    google.maps.event.addDomListener($('li:contains(' + locName + ')').get(0), 'click', function() {
+        // console.log("li click");
+        google.maps.event.trigger(marker, 'click');
+    });
 }
 
 // initiate
