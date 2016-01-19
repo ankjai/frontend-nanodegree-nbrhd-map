@@ -28,8 +28,8 @@ function AppViewModel() {
             }
         }
 
-        var temp = restaurantsArray.filter(filterList);
-        var markerTemp = markerArray.filter(filterList);
+        var restaurantsArrayTemp = restaurantsArray.filter(filterList);
+        var markerArrayTemp = markerArray.filter(filterList);
 
         try {
             // unset all markers on map
@@ -46,10 +46,9 @@ function AppViewModel() {
             console.error(err);
         } finally {
             // update list w/ filtered values
-            for (var i = 0; i < temp.length; i++) {
-                // createMarker(markerTemp[i].google, false);
-                markerTemp[i].marker.setMap(map);
-                self.displayList.push(temp[i].google);
+            for (var i = 0; i < restaurantsArrayTemp.length; i++) {
+                markerArrayTemp[i].marker.setMap(map);
+                self.displayList.push(restaurantsArrayTemp[i].google);
             };
         }
     }
@@ -124,6 +123,7 @@ function callback(results, status) {
 function createMarker(googlePlace, updateMarkerArray) {
     var marker = new google.maps.Marker({
         map: map,
+        animation: google.maps.Animation.DROP,
         position: googlePlace.geometry.location
     });
 
@@ -191,9 +191,28 @@ function markerInfoWindow() {
         let tempMarker = markerArray[j].marker;
         // let tempPlaceName = markerArray[j].google.name;
 
-        google.maps.event.addListener(tempMarker, 'click', function() {
+        google.maps.event.addDomListener($('li:contains(' + restaurantsArray[j].google.name + ')').get(0), 'click', function() {
+            console.log("li click");
+            tempMarker.setAnimation(google.maps.Animation.BOUNCE);
             infowindow.setContent(contentString);
             infowindow.open(map, tempMarker);
+
+            setTimeout(function() {
+                tempMarker.setAnimation(null);
+            }, 1400);
+        });
+
+        console.log($('li:contains(' + restaurantsArray[j].google.name + ')').get(0));
+
+        google.maps.event.addListener(tempMarker, 'click', function() {
+            console.log("click function");
+            tempMarker.setAnimation(google.maps.Animation.BOUNCE);
+            infowindow.setContent(contentString);
+            infowindow.open(map, tempMarker);
+
+            setTimeout(function() {
+                tempMarker.setAnimation(null);
+            }, 1400);
         });
     };
 }
