@@ -19,7 +19,6 @@ body {
 }
 
 #infowindow * {
-    /*border: solid black 1px !important;*/
     /*text-align: center;*/
     /*width: 100%;*/
     overflow: hidden;
@@ -64,4 +63,44 @@ body {
 
 #infoLowerRight {
     margin-left: 50%;
+}
+
+#leftNav * {
+    /*border: solid black 1px !important;*/
+    text-align: left;
+}
+
+.col-md-3,
+.col-md-9 {
+    padding: 0px;
+}
+
+#leftNavFilterArea {
+    /*padding: 5px;*/
+    padding-left: 20px;
+}
+
+#leftNav {
+    font-family: 'Open Sans', sans-serif;
+    color: #767676;
+}
+
+#heading h2 {
+    text-align: center;
+}
+
+ul {
+    padding: 0px;
+    list-style-type: none;
+}
+
+#search input,
+li {
+    padding: 5px;
+    width: 300px;
+    height: 30px;
+}
+
+li:hover{
+    color: #4285f4;
 }
