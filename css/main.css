@@ -101,6 +101,13 @@ li {
     height: 30px;
 }
 
-li:hover{
+li:hover {
     color: #4285f4;
+}
+
+.pin {
+    padding-left: 20px;
+    background-image: url('../images/rsz_1rsz_pin.png');
+    background-repeat: no-repeat;
+    background-position: 5px;
 }
