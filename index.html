@@ -19,11 +19,11 @@
                 <hr>
                 <div id="leftNavFilterArea">
                     <div id="search">
-                        <input type="text" data-bind="value: keyword, valueUpdate: 'afterkeydown', event: { 'keyup': enterSearch }" placeholder="Filter restaurants...">
+                        <input type="text" data-bind="value: keyword, valueUpdate: 'afterkeydown', event: { 'keyup': enterSearch }" placeholder="Filter restaurants..." autofocus>
                     </div>
                     <div id="list">
                         <ul data-bind="foreach: displayList">
-                            <li class="pin" data-bind="text: name">  </li>
+                            <li class="pin" data-bind="text: name"> </li>
                         </ul>
                     </div>
                 </div>
