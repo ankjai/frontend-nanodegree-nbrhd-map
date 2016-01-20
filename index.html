@@ -3,6 +3,7 @@
 
 <head>
     <title>Neighborhood Map</title>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:600' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/main.css">
@@ -11,11 +12,21 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-3">
-                <input type="text" data-bind="value: keyword, valueUpdate: 'afterkeydown', event: { 'keyup': enterSearch }">
-                <ul data-bind="foreach: displayList">
-                    <li data-bind="text: name"></li>
-                </ul>
+            <div id="leftNav" class="col-md-3">
+                <div id="heading">
+                    <h2>SF Restaurants</h2>
+                </div>
+                <hr>
+                <div id="leftNavFilterArea">
+                    <div id="search">
+                        <input type="text" data-bind="value: keyword, valueUpdate: 'afterkeydown', event: { 'keyup': enterSearch }" placeholder="Filter restaurants..." autofocus>
+                    </div>
+                    <div id="list">
+                        <ul data-bind="foreach: displayList">
+                            <li class="pin" data-bind="text: name"> </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
             <div class="col-md-9">
                 <div id="map"></div>
@@ -24,6 +35,7 @@
     </div>
     <script src="javascripts/libs/knockoutjs/knockout-3.4.0.js" type="text/javascript"></script>
     <script src="javascripts/libs/jquery/jquery-2.1.4.min.js" type="text/javascript"></script>
+    <script src="javascripts/api.js" type="text/javascript"></script>
     <script src="javascripts/app.js" type="text/javascript"></script>
 </body>
 
