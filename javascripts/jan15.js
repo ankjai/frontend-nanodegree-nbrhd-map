@@ -130,7 +130,6 @@ function callback(results, status) {
 
         // timeout to retrieve all data
         setTimeout(markerInfoWindow, 1500);
-        // markerInfoWindow();
     }
 }
 
@@ -182,7 +181,6 @@ function buildLocDetailsObj(place, results) {
 }
 
 function markerInfoWindow() {
-    // console.log(restaurantsArray);
     for (var i = 0; i < markerArray.length; i++) {
         let j = i;
 
@@ -208,7 +206,6 @@ function markerInfoWindow() {
             '</div>';
 
         google.maps.event.addListener(markerObj, 'click', function() {
-            // console.log("click function");
             markerObj.setAnimation(google.maps.Animation.BOUNCE);
             infowindow.setContent(contentString);
             infowindow.open(map, markerObj);
@@ -224,9 +221,7 @@ function markerInfoWindow() {
 }
 
 function addLiListener(marker, locName) {
-    // console.log(locName);
     google.maps.event.addDomListener($('li:contains(' + locName + ')').get(0), 'click', function() {
-        // console.log("li click");
         google.maps.event.trigger(marker, 'click');
     });
 }
