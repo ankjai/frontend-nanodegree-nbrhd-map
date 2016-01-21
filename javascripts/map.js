@@ -1,75 +1,7 @@
-var viewModel = new AppViewModel();
 var map;
 var infowindow;
 var restaurantsArray = [];
 var markerArray = [];
-
-/**
- * [AppViewModel description]
- */
-function AppViewModel() {
-    var self = this;
-
-    self.displayList = ko.observableArray();
-    self.keyword = ko.observable("");
-
-    // update
-    self.updateList = function(googlePlace) {
-        self.displayList.push(googlePlace);
-    }
-
-    // filter
-    self.enterSearch = function(data, event) {
-        function filterList(element, index, array) {
-            if (element.google.name.toLowerCase().includes(self.keyword().toLowerCase())) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        var restaurantsArrayTemp = restaurantsArray.filter(filterList);
-        var markerArrayTemp = markerArray.filter(filterList);
-
-        try {
-            // unset all markers on map
-            for (var i = 0; i < markerArray.length; i++) {
-                markerArray[i].marker.setMap(null);
-            };
-
-            // empty list on left nav
-            // before filling w/ new filtered values
-            if (self.displayList().length > 0) {
-                self.displayList.removeAll();
-            };
-        } catch (err) {
-            console.error(err);
-        } finally {
-            // iterate over markerArrayTemp and locate correct googleObj
-            for (var i = 0; i < markerArrayTemp.length; i++) {
-                // markerArrayTemp[i].marker.setMap(map);
-                var googleObj;
-                var markerObj;
-                for (var k = 0; k < restaurantsArrayTemp.length; k++) {
-                    if (restaurantsArrayTemp[k].google.name === markerArrayTemp[i].google.name) {
-                        googleObj = restaurantsArrayTemp[k].google;
-                        markerObj = markerArrayTemp[i].marker;
-                        break;
-                    };
-                };
-                // update filtered list
-                self.displayList.push(googleObj);
-                // set filtered marker
-                markerObj.setMap(map);
-                // trigger marker click event on 'li' click event
-                addLiListener(markerObj, googleObj.name);
-            };
-        }
-    }
-}
-
-// Activate KO
-ko.applyBindings(viewModel);
 
 /**
  * [makeMap description]
@@ -83,16 +15,19 @@ function makeMap() {
         libraries: 'places'
     };
 
-    apiCall(url, 'GET', 'jsonp', data, function() {
-        initMap();
-    });
+    apiCall(url, 'GET', 'jsonp', data, initMap);
 }
 
 /**
  * [initMap description]
  * @return {[type]} [description]
  */
-function initMap() {
+function initMap(textStatus, errorMessage) {
+    if (textStatus === 'error') {
+        $('#map').append('<p style="color:red;text-align:center">ERROR: ' + errorMessage + '</p>');
+        return;
+    };
+
     var sfo = {
         lat: 37.773972,
         lng: -122.431297
@@ -133,6 +68,12 @@ function callback(results, status) {
     }
 }
 
+/**
+ * [createMarker description]
+ * @param  {[type]} googlePlace       [description]
+ * @param  {[type]} updateMarkerArray [description]
+ * @return {[type]}                   [description]
+ */
 function createMarker(googlePlace, updateMarkerArray) {
     var marker = new google.maps.Marker({
         map: map,
@@ -173,37 +114,60 @@ function getDetailsFrom4SQ(place) {
  * @param  {[type]} results [description]
  * @return {[type]}         [description]
  */
-function buildLocDetailsObj(place, results) {
+function buildLocDetailsObj(textStatus, responseMessage, place, results) {
     var restaurantsList = {};
+
+    restaurantsList.textStatus = textStatus;
+    restaurantsList.responseMessage = responseMessage;
     restaurantsList.google = place;
-    restaurantsList.foursquare = results.response;
+
+    if (textStatus === 'success') {
+        restaurantsList.foursquare = results.response;
+    };
+
     restaurantsArray.push(restaurantsList);
 }
 
+/**
+ * [markerInfoWindow description]
+ * @return {[type]} [description]
+ */
 function markerInfoWindow() {
     for (var i = 0; i < markerArray.length; i++) {
         let j = i;
-
-        // find this google loc's 4sq obj
+        let textStatusObj;
+        let responseMessageObj;
         let foursquareObj;
         let googleObj;
         let markerObj;
+        let contentString;
+
         for (var k = 0; k < restaurantsArray.length; k++) {
+            textStatusObj = restaurantsArray[k].textStatus;
+            responseMessageObj = restaurantsArray[k].responseMessage;
+
             if (restaurantsArray[k].google.name === markerArray[j].google.name) {
-                foursquareObj = restaurantsArray[k].foursquare;
+                if (textStatusObj === 'success') {
+                    foursquareObj = restaurantsArray[k].foursquare;
+                };
                 googleObj = restaurantsArray[k].google;
                 markerObj = markerArray[j].marker;
                 break;
             };
         };
 
-        let contentString = '<div id="infowindow">' +
-            '<div id="infoUpper"><div id="infoUpperLeft"><img id="icon" src="' + googleObj.icon + '" alt="icon"></div>' +
-            '<div id="infoUpperRight"><h3>' + foursquareObj.venues[0].name + '</h3><div id="venueDetails01"><div id="venueScore"><div>' + googleObj.rating + '</div></div><div id="venueAddrCusine"><h5>' + googleObj.formatted_address + '</h5><h6>' + foursquareObj.venues[0].categories[0].name + '</h6></div></div></div></div>' +
-            '<hr>' +
-            '<div id="infoLower"><div id="infoLowerLeft"><a href="tel:' + foursquareObj.venues[0].contact.phone + '">' + foursquareObj.venues[0].contact.formattedPhone + '</a></div>' +
-            '<div id="infoLowerRight"><a href="' + foursquareObj.venues[0].menu.url + '">View Menu</a></div></div>' +
-            '</div>';
+        if (textStatusObj === 'success') {
+            contentString = '<div id="infowindow">' +
+                '<div id="infoUpper"><div id="infoUpperLeft"><img id="icon" src="' + googleObj.icon + '" alt="icon"></div>' +
+                '<div id="infoUpperRight"><h3>' + foursquareObj.venues[0].name + '</h3><div id="venueDetails01"><div id="venueScore"><div>' + googleObj.rating + '</div></div><div id="venueAddrCusine"><h5>' + googleObj.formatted_address + '</h5><h6>' + foursquareObj.venues[0].categories[0].name + '</h6></div></div></div></div>' +
+                '<hr>' +
+                '<div id="infoLower"><div id="infoLowerLeft"><a href="tel:' + foursquareObj.venues[0].contact.phone + '">' + foursquareObj.venues[0].contact.formattedPhone + '</a></div>' +
+                '<div id="infoLowerRight"><a href="' + foursquareObj.venues[0].menu.url + '">View Menu</a></div></div>' +
+                '</div>';
+        } else if (textStatusObj === 'error') {
+            contentString = '<div id="infowindow"><p style="color:red;text-align:center">ERROR: ' + responseMessageObj + '</p></div>';
+        };
+
 
         google.maps.event.addListener(markerObj, 'click', function() {
             markerObj.setAnimation(google.maps.Animation.BOUNCE);
@@ -220,6 +184,11 @@ function markerInfoWindow() {
     };
 }
 
+/**
+ * [addLiListener description]
+ * @param {[type]} marker  [description]
+ * @param {[type]} locName [description]
+ */
 function addLiListener(marker, locName) {
     google.maps.event.addDomListener($('li:contains(' + locName + ')').get(0), 'click', function() {
         google.maps.event.trigger(marker, 'click');
