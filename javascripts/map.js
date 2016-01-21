@@ -7,7 +7,7 @@ var markerArray = [];
  * [makeMap description]
  * @return {[type]} [description]
  */
- function makeMap() {
+function makeMap() {
     var url = 'https://maps.googleapis.com/maps/api/js';
     var data = {
         key: 'AIzaSyCo449F-wVfaVbN7PG9dG1ygJW2UoJHba0',
@@ -15,16 +15,19 @@ var markerArray = [];
         libraries: 'places'
     };
 
-    apiCall(url, 'GET', 'jsonp', data, function() {
-        initMap();
-    });
+    apiCall(url, 'GET', 'jsonp', data, initMap);
 }
 
 /**
  * [initMap description]
  * @return {[type]} [description]
  */
-function initMap() {
+function initMap(textStatus, errorMessage) {
+    if (textStatus === 'error') {
+        $('#map').append('<p style="color:red;text-align:center">ERROR: ' + errorMessage + '</p>');
+        return;
+    };
+
     var sfo = {
         lat: 37.773972,
         lng: -122.431297
@@ -111,10 +114,17 @@ function getDetailsFrom4SQ(place) {
  * @param  {[type]} results [description]
  * @return {[type]}         [description]
  */
-function buildLocDetailsObj(place, results) {
+function buildLocDetailsObj(textStatus, responseMessage, place, results) {
     var restaurantsList = {};
+
+    restaurantsList.textStatus = textStatus;
+    restaurantsList.responseMessage = responseMessage;
     restaurantsList.google = place;
-    restaurantsList.foursquare = results.response;
+
+    if (textStatus === 'success') {
+        restaurantsList.foursquare = results.response;
+    };
+
     restaurantsArray.push(restaurantsList);
 }
 
@@ -125,27 +135,39 @@ function buildLocDetailsObj(place, results) {
 function markerInfoWindow() {
     for (var i = 0; i < markerArray.length; i++) {
         let j = i;
-
-        // find this google loc's 4sq obj
+        let textStatusObj;
+        let responseMessageObj;
         let foursquareObj;
         let googleObj;
         let markerObj;
+        let contentString;
+
         for (var k = 0; k < restaurantsArray.length; k++) {
+            textStatusObj = restaurantsArray[k].textStatus;
+            responseMessageObj = restaurantsArray[k].responseMessage;
+
             if (restaurantsArray[k].google.name === markerArray[j].google.name) {
-                foursquareObj = restaurantsArray[k].foursquare;
+                if (textStatusObj === 'success') {
+                    foursquareObj = restaurantsArray[k].foursquare;
+                };
                 googleObj = restaurantsArray[k].google;
                 markerObj = markerArray[j].marker;
                 break;
             };
         };
 
-        let contentString = '<div id="infowindow">' +
-            '<div id="infoUpper"><div id="infoUpperLeft"><img id="icon" src="' + googleObj.icon + '" alt="icon"></div>' +
-            '<div id="infoUpperRight"><h3>' + foursquareObj.venues[0].name + '</h3><div id="venueDetails01"><div id="venueScore"><div>' + googleObj.rating + '</div></div><div id="venueAddrCusine"><h5>' + googleObj.formatted_address + '</h5><h6>' + foursquareObj.venues[0].categories[0].name + '</h6></div></div></div></div>' +
-            '<hr>' +
-            '<div id="infoLower"><div id="infoLowerLeft"><a href="tel:' + foursquareObj.venues[0].contact.phone + '">' + foursquareObj.venues[0].contact.formattedPhone + '</a></div>' +
-            '<div id="infoLowerRight"><a href="' + foursquareObj.venues[0].menu.url + '">View Menu</a></div></div>' +
-            '</div>';
+        if (textStatusObj === 'success') {
+            contentString = '<div id="infowindow">' +
+                '<div id="infoUpper"><div id="infoUpperLeft"><img id="icon" src="' + googleObj.icon + '" alt="icon"></div>' +
+                '<div id="infoUpperRight"><h3>' + foursquareObj.venues[0].name + '</h3><div id="venueDetails01"><div id="venueScore"><div>' + googleObj.rating + '</div></div><div id="venueAddrCusine"><h5>' + googleObj.formatted_address + '</h5><h6>' + foursquareObj.venues[0].categories[0].name + '</h6></div></div></div></div>' +
+                '<hr>' +
+                '<div id="infoLower"><div id="infoLowerLeft"><a href="tel:' + foursquareObj.venues[0].contact.phone + '">' + foursquareObj.venues[0].contact.formattedPhone + '</a></div>' +
+                '<div id="infoLowerRight"><a href="' + foursquareObj.venues[0].menu.url + '">View Menu</a></div></div>' +
+                '</div>';
+        } else if (textStatusObj === 'error') {
+            contentString = '<div id="infowindow"><p style="color:red;text-align:center">ERROR: ' + responseMessageObj + '</p></div>';
+        };
+
 
         google.maps.event.addListener(markerObj, 'click', function() {
             markerObj.setAnimation(google.maps.Animation.BOUNCE);
