@@ -1,3 +1,46 @@
+/**
+ * [apiCall description]
+ * @param  {[type]}   url      [description]
+ * @param  {[type]}   method   [description]
+ * @param  {[type]}   dataType [description]
+ * @param  {[type]}   data     [description]
+ * @param  {Function} callback [description]
+ * @param  {[type]}   arg1     [description]
+ * @return {[type]}            [description]
+ */
+function apiCall(url, method, dataType, data, callback, arg1) {
+    $.ajax({
+            url: url,
+            type: method,
+            dataType: dataType,
+            data: data
+        })
+        .done(function(results, textStatus, jqXHR) {
+            callback(textStatus, 'OK', arg1, results);
+        })
+        .fail(function(jqXHR, textStatus, errorThrown) {
+            // Error logic here
+            var msg = '';
+            if (jqXHR.status === 0) {
+                msg = 'Not connect.\n Verify Network.';
+            } else if (jqXHR.status == 404) {
+                msg = 'Requested page not found. [404]';
+            } else if (jqXHR.status == 500) {
+                msg = 'Internal Server Error [500].';
+            } else if (exception === 'parsererror') {
+                msg = 'Requested JSON parse failed.';
+            } else if (exception === 'timeout') {
+                msg = 'Time out error.';
+            } else if (exception === 'abort') {
+                msg = 'Ajax request aborted.';
+            } else {
+                msg = 'Uncaught Error.\n' + jqXHR.responseText;
+            }
+
+            callback(textStatus, msg, arg1);
+        });
+}
+
 var map;
 var infowindow;
 var restaurantsArray = [];
@@ -26,7 +69,7 @@ function initMap(textStatus, errorMessage) {
     if (textStatus === 'error') {
         $('#map').append('<p style="color:red;text-align:center">ERROR: ' + errorMessage + '</p>');
         return;
-    };
+    }
 
     var sfo = {
         lat: 37.773972,
@@ -61,7 +104,7 @@ function callback(results, status) {
             createMarker(results[i], true);
             viewModel.updateList(results[i]);
             getDetailsFrom4SQ(results[i]);
-        };
+        }
 
         // timeout to retrieve all data
         setTimeout(markerInfoWindow, 1500);
@@ -86,7 +129,7 @@ function createMarker(googlePlace, updateMarkerArray) {
         markerList.google = googlePlace;
         markerList.marker = marker;
         markerArray.push(markerList);
-    };
+    }
 }
 
 /**
@@ -123,7 +166,7 @@ function buildLocDetailsObj(textStatus, responseMessage, place, results) {
 
     if (textStatus === 'success') {
         restaurantsList.foursquare = results.response;
-    };
+    }
 
     restaurantsArray.push(restaurantsList);
 }
@@ -133,8 +176,8 @@ function buildLocDetailsObj(textStatus, responseMessage, place, results) {
  * @return {[type]} [description]
  */
 function markerInfoWindow() {
-    for (var i = 0; i < markerArray.length; i++) {
-        let j = i;
+    for (var x = 0; x < markerArray.length; x++) {
+        let j = x;
         let textStatusObj;
         let responseMessageObj;
         let foursquareObj;
@@ -149,12 +192,12 @@ function markerInfoWindow() {
             if (restaurantsArray[k].google.name === markerArray[j].google.name) {
                 if (textStatusObj === 'success') {
                     foursquareObj = restaurantsArray[k].foursquare;
-                };
+                }
                 googleObj = restaurantsArray[k].google;
                 markerObj = markerArray[j].marker;
                 break;
-            };
-        };
+            }
+        }
 
         if (textStatusObj === 'success') {
             contentString = '<div id="infowindow">' +
@@ -166,7 +209,7 @@ function markerInfoWindow() {
                 '</div>';
         } else if (textStatusObj === 'error') {
             contentString = '<div id="infowindow"><p style="color:red;text-align:center">ERROR: ' + responseMessageObj + '</p></div>';
-        };
+        }
 
 
         google.maps.event.addListener(markerObj, 'click', function() {
@@ -181,7 +224,7 @@ function markerInfoWindow() {
 
         // trigger marker click event on 'li' click event
         addLiListener(markerObj, googleObj.name);
-    };
+    }
 }
 
 /**
@@ -197,3 +240,71 @@ function addLiListener(marker, locName) {
 
 // initiate
 makeMap();
+
+var viewModel = new AppViewModel();
+
+/**
+ * [AppViewModel description]
+ */
+function AppViewModel() {
+    var self = this;
+
+    self.displayList = ko.observableArray();
+    self.keyword = ko.observable("");
+
+    // update
+    self.updateList = function(googlePlace) {
+        self.displayList.push(googlePlace);
+    };
+
+    // filter
+    self.enterSearch = function(data, event) {
+        function filterList(element, index, array) {
+            if (element.google.name.toLowerCase().includes(self.keyword().toLowerCase())) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        var restaurantsArrayTemp = restaurantsArray.filter(filterList);
+        var markerArrayTemp = markerArray.filter(filterList);
+
+        try {
+            // unset all markers on map
+            for (var i = 0; i < markerArray.length; i++) {
+                markerArray[i].marker.setMap(null);
+            }
+
+            // empty list on left nav
+            // before filling w/ new filtered values
+            if (self.displayList().length > 0) {
+                self.displayList.removeAll();
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            // iterate over markerArrayTemp and locate correct googleObj
+            for (var j = 0; j < markerArrayTemp.length; j++) {
+                var googleObj;
+                var markerObj;
+                for (var k = 0; k < restaurantsArrayTemp.length; k++) {
+                    if (restaurantsArrayTemp[k].google.name === markerArrayTemp[j].google.name) {
+                        googleObj = restaurantsArrayTemp[k].google;
+                        markerObj = markerArrayTemp[j].marker;
+                        break;
+                    }
+                }
+                // update filtered list
+                self.displayList.push(googleObj);
+                // set filtered marker
+                markerObj.setMap(map);
+                // trigger marker click event on 'li' click event
+                addLiListener(markerObj, googleObj.name);
+            }
+        }
+    };
+}
+
+// Activate KO
+ko.applyBindings(viewModel);
