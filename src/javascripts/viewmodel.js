@@ -1,7 +1,7 @@
 var viewModel = new AppViewModel();
 
 /**
- * [AppViewModel description]
+ * Knockout ViewModel
  */
 function AppViewModel() {
     var self = this;
@@ -9,12 +9,12 @@ function AppViewModel() {
     self.displayList = ko.observableArray();
     self.keyword = ko.observable("");
 
-    // update
+    // update restaurants list on left nav
     self.updateList = function(googlePlace) {
         self.displayList.push(googlePlace);
     };
 
-    // filter
+    // filter list based on user input
     self.enterSearch = function(data, event) {
         function filterList(element, index, array) {
             if (element.google.name.toLowerCase().includes(self.keyword().toLowerCase())) {
@@ -24,6 +24,7 @@ function AppViewModel() {
             }
         }
 
+        // temp arrays to store filtered list of restaurants
         var restaurantsArrayTemp = restaurantsArray.filter(filterList);
         var markerArrayTemp = markerArray.filter(filterList);
 

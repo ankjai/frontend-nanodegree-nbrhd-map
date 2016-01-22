@@ -1,14 +1,14 @@
 /**
- * [apiCall description]
- * @param  {[type]}   url      [description]
- * @param  {[type]}   method   [description]
- * @param  {[type]}   dataType [description]
- * @param  {[type]}   data     [description]
- * @param  {Function} callback [description]
- * @param  {[type]}   arg1     [description]
- * @return {[type]}            [description]
+ * Function to make async jQuery.ajax() call to url
+ * @param  {String}   url      base url
+ * @param  {String}   method   http method
+ * @param  {String}   dataType response data type
+ * @param  {Object}   data     request data
+ * @param  {Function} callback callback function
+ * @param  {Object}   placeObj google place obj
+ * @return {Object}            response data, status, error msg
  */
-function apiCall(url, method, dataType, data, callback, arg1) {
+function apiCall(url, method, dataType, data, callback, placeObj) {
     $.ajax({
             url: url,
             type: method,
@@ -16,7 +16,7 @@ function apiCall(url, method, dataType, data, callback, arg1) {
             data: data
         })
         .done(function(results, textStatus, jqXHR) {
-            callback(textStatus, 'OK', arg1, results);
+            callback(textStatus, 'OK', placeObj, results);
         })
         .fail(function(jqXHR, textStatus, errorThrown) {
             // Error logic here
@@ -37,7 +37,7 @@ function apiCall(url, method, dataType, data, callback, arg1) {
                 msg = 'Uncaught Error.\n' + jqXHR.responseText;
             }
 
-            callback(textStatus, msg, arg1);
+            callback(textStatus, msg, placeObj);
         });
 }
 
@@ -47,8 +47,7 @@ var restaurantsArray = [];
 var markerArray = [];
 
 /**
- * [makeMap description]
- * @return {[type]} [description]
+ * entry point to draw google map
  */
 function makeMap() {
     var url = 'https://maps.googleapis.com/maps/api/js';
@@ -62,8 +61,11 @@ function makeMap() {
 }
 
 /**
- * [initMap description]
- * @return {[type]} [description]
+ * callback function
+ * get executed when we get response from google map api
+ * 
+ * @param  {String} textStatus   response status
+ * @param  {String} errorMessage error msg in case of fail response
  */
 function initMap(textStatus, errorMessage) {
     if (textStatus === 'error') {
@@ -92,30 +94,34 @@ function initMap(textStatus, errorMessage) {
 }
 
 /**
- * [callback description]
- * @param  {[type]}   results [description]
- * @param  {[type]}   status  [description]
- * @return {Function}         [description]
+ * PlacesService callback function
+ * @param  {Object}   results textSearch results
+ * @param  {String}   status  response status
  */
 function callback(results, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
-        // first add google 
         for (var i = 0; i < results.length; i++) {
+            // make async calls to
+            // first create markers
             createMarker(results[i], true);
+            // secondly update rest. list on left nav
             viewModel.updateList(results[i]);
+            // parallely based on the response, make call
+            // to foursquare (3rd party API) for more
+            // info on restaurants
             getDetailsFrom4SQ(results[i]);
         }
 
-        // timeout to retrieve all data
+        // timeout until all data models are updated
+        // by api calls to 4sq
         setTimeout(markerInfoWindow, 1500);
     }
 }
 
 /**
- * [createMarker description]
- * @param  {[type]} googlePlace       [description]
- * @param  {[type]} updateMarkerArray [description]
- * @return {[type]}                   [description]
+ * create map marker objs
+ * @param  {Object} googlePlace       place obj
+ * @param  {Array} updateMarkerArray  array consisting of markerList obj
  */
 function createMarker(googlePlace, updateMarkerArray) {
     var marker = new google.maps.Marker({
@@ -133,9 +139,8 @@ function createMarker(googlePlace, updateMarkerArray) {
 }
 
 /**
- * [getDetailsFrom4SQ description]
- * @param  {[type]} place [description]
- * @return {[type]}       [description]
+ * function to make calls to foursquare APIs
+ * @param  {Object} place google place obj
  */
 function getDetailsFrom4SQ(place) {
     var url = 'https://api.foursquare.com/v2/venues/search';
@@ -152,10 +157,11 @@ function getDetailsFrom4SQ(place) {
 }
 
 /**
- * [buildLocDetailsObj description]
- * @param  {[type]} place   [description]
- * @param  {[type]} results [description]
- * @return {[type]}         [description]
+ * build restaurantsList obj for restaurantsArray
+ * @param  {String} textStatus      response status
+ * @param  {String} responseMessage response msg
+ * @param  {Object} place           google place obj
+ * @param  {Object} results         response data from 4sq
  */
 function buildLocDetailsObj(textStatus, responseMessage, place, results) {
     var restaurantsList = {};
@@ -172,11 +178,13 @@ function buildLocDetailsObj(textStatus, responseMessage, place, results) {
 }
 
 /**
- * [markerInfoWindow description]
- * @return {[type]} [description]
+ * create markerInfoWindow on markers
  */
 function markerInfoWindow() {
     for (var x = 0; x < markerArray.length; x++) {
+        // 'let' keyword to define variables inside this block
+        // and avoid bugs caused bcoz of creation of anonymous func
+        // inside a for loop
         let j = x;
         let textStatusObj;
         let responseMessageObj;
@@ -199,6 +207,7 @@ function markerInfoWindow() {
             }
         }
 
+        // construct markerInfoWindow's content
         if (textStatusObj === 'success') {
             contentString = '<div id="infowindow">' +
                 '<div id="infoUpper"><div id="infoUpperLeft"><img id="icon" src="' + googleObj.icon + '" alt="icon"></div>' +
@@ -212,6 +221,7 @@ function markerInfoWindow() {
         }
 
 
+        // add click listener on markers
         google.maps.event.addListener(markerObj, 'click', function() {
             markerObj.setAnimation(google.maps.Animation.BOUNCE);
             infowindow.setContent(contentString);
@@ -228,9 +238,9 @@ function markerInfoWindow() {
 }
 
 /**
- * [addLiListener description]
- * @param {[type]} marker  [description]
- * @param {[type]} locName [description]
+ * func to addLiListener
+ * @param {Object} marker  marker object
+ * @param {String} locName location name
  */
 function addLiListener(marker, locName) {
     google.maps.event.addDomListener($('li:contains(' + locName + ')').get(0), 'click', function() {
@@ -244,7 +254,7 @@ makeMap();
 var viewModel = new AppViewModel();
 
 /**
- * [AppViewModel description]
+ * Knockout ViewModel
  */
 function AppViewModel() {
     var self = this;
@@ -252,12 +262,12 @@ function AppViewModel() {
     self.displayList = ko.observableArray();
     self.keyword = ko.observable("");
 
-    // update
+    // update restaurants list on left nav
     self.updateList = function(googlePlace) {
         self.displayList.push(googlePlace);
     };
 
-    // filter
+    // filter list based on user input
     self.enterSearch = function(data, event) {
         function filterList(element, index, array) {
             if (element.google.name.toLowerCase().includes(self.keyword().toLowerCase())) {
@@ -267,6 +277,7 @@ function AppViewModel() {
             }
         }
 
+        // temp arrays to store filtered list of restaurants
         var restaurantsArrayTemp = restaurantsArray.filter(filterList);
         var markerArrayTemp = markerArray.filter(filterList);
 
