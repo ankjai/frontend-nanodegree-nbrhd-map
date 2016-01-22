@@ -1,0 +1,31 @@
+{
+  "name": "frontend-nanodegree-nbrhd-map",
+  "version": "1.0.0",
+  "description": "neighbourhood map",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ankjai/frontend-nanodegree-nbrhd-map.git"
+  },
+  "keywords": [
+    "map"
+  ],
+  "author": "Ankit Jaiswal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ankjai/frontend-nanodegree-nbrhd-map/issues"
+  },
+  "homepage": "https://github.com/ankjai/frontend-nanodegree-nbrhd-map#readme",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-concat": "^0.5.1",
+    "grunt-contrib-cssmin": "^0.14.0",
+    "grunt-contrib-htmlmin": "^0.6.0",
+    "grunt-contrib-imagemin": "^1.0.0",
+    "grunt-contrib-jshint": "^0.12.0",
+    "load-grunt-tasks": "^3.4.0"
+  }
+}
