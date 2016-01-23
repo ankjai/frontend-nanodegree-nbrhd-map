@@ -21,7 +21,26 @@ grunt connect
 ```
 should start web server at **http://localhost:8080**
 
+![](https://cloud.githubusercontent.com/assets/6732675/12528766/b3f1a4de-c156-11e5-8c99-119c2b0d549f.png)
+
 ###### Locally w/o Web Server
 From browser, open `dist/index.html`. 
 
 Either of this technique should open **Neighborhood Map** app in your browser.
+![](https://cloud.githubusercontent.com/assets/6732675/12528805/1024f9bc-c158-11e5-9d28-bf3a620bd47f.png)
+
+
+
+#### Features
+
+###### Search Bar
+Filters both the locations in the list and the markers on the map.
+![](https://cloud.githubusercontent.com/assets/6732675/12529321/1756319c-c167-11e5-9094-e79b71a723c9.gif)
+
+###### List View
+Shows locations that have been searched for, additionally clicking on location activates its associated map marker.
+![](https://cloud.githubusercontent.com/assets/6732675/12529356/00bdc2aa-c168-11e5-8bc7-2bca479861e6.gif)
+
+###### Map
+Shows each searched locations as markers, each marker can be clicked and shows unique information about a location in infowindow. Marker shows bouncing animation when clicked.
+![](https://cloud.githubusercontent.com/assets/6732675/12529392/d690d200-c168-11e5-8ddc-db3b3c958ffc.gif)
