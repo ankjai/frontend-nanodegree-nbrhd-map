@@ -9,3 +9,12 @@ Develop a single page application featuring a map of your neighborhood or a neig
 #### How to Run the App
 
 ###### Grunt
+If you already have node.js and grunt-cli installed, then you can resolve project dependencies by running:
+```
+npm install
+```
+Now do:
+```
+grunt connect
+```
+This will start web server on http://localhost:8080
