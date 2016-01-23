@@ -9,12 +9,19 @@ Develop a single page application featuring a map of your neighborhood or a neig
 #### How to Run the App
 
 ###### Grunt
-If you already have node.js and grunt-cli installed, then you can resolve project dependencies by running:
+If you already have node.js/npm and grunt-cli installed, then you can resolve project dependencies by running
 ```
 npm install
 ```
-Now do:
+from inside the app directory (i.e. where package.json is located) will install the dependencies for this app. These will be placed in ./node_modules relative to package.json file (it's slightly more complex than this, so check the npm docs [here](https://docs.npmjs.com/files/folders#more-information)).
+
+Now by running
 ```
 grunt connect
 ```
-This will start web server on http://localhost:8080
+should start web server at **http://localhost:8080**
+
+###### Locally w/o Web Server
+From browser, open `dist/index.html`. 
+
+Either of this technique should open **Neighborhood Map** app in your browser.
