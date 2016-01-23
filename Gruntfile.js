@@ -43,6 +43,15 @@ module.exports = function(grunt) {
                     'dist/index.html': 'src/index.html'
                 }
             }
+        },
+        connect: {
+            server: {
+                options: {
+                    port: 8080,
+                    base: 'dist',
+                    keepalive: true
+                }
+            }
         }
     });
 

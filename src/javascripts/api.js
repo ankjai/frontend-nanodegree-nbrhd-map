@@ -1,14 +1,14 @@
 /**
- * [apiCall description]
- * @param  {[type]}   url      [description]
- * @param  {[type]}   method   [description]
- * @param  {[type]}   dataType [description]
- * @param  {[type]}   data     [description]
- * @param  {Function} callback [description]
- * @param  {[type]}   arg1     [description]
- * @return {[type]}            [description]
+ * Function to make async jQuery.ajax() call to url
+ * @param  {String}   url      base url
+ * @param  {String}   method   http method
+ * @param  {String}   dataType response data type
+ * @param  {Object}   data     request data
+ * @param  {Function} callback callback function
+ * @param  {Object}   placeObj google place obj
+ * @return {Object}            response data, status, error msg
  */
-function apiCall(url, method, dataType, data, callback, arg1) {
+function apiCall(url, method, dataType, data, callback, placeObj) {
     $.ajax({
             url: url,
             type: method,
@@ -16,7 +16,7 @@ function apiCall(url, method, dataType, data, callback, arg1) {
             data: data
         })
         .done(function(results, textStatus, jqXHR) {
-            callback(textStatus, 'OK', arg1, results);
+            callback(textStatus, 'OK', placeObj, results);
         })
         .fail(function(jqXHR, textStatus, errorThrown) {
             // Error logic here
@@ -37,6 +37,6 @@ function apiCall(url, method, dataType, data, callback, arg1) {
                 msg = 'Uncaught Error.\n' + jqXHR.responseText;
             }
 
-            callback(textStatus, msg, arg1);
+            callback(textStatus, msg, placeObj);
         });
 }
