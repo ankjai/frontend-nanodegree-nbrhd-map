@@ -41,10 +41,11 @@ function apiCall(url, method, dataType, data, callback, placeObj) {
         });
 }
 
-var map;
-var infowindow;
-var restaurantsArray = [];
-var markerArray = [];
+var map,
+    bounds,
+    infowindow,
+    restaurantsArray = [],
+    markerArray = [];
 
 /**
  * entry point to draw google map
@@ -79,9 +80,10 @@ function initMap(textStatus, errorMessage) {
     };
 
     map = new google.maps.Map(document.getElementById('map'), {
-        center: sfo,
-        zoom: 13
+        center: sfo
     });
+
+    bounds = new google.maps.LatLngBounds();
 
     infowindow = new google.maps.InfoWindow();
 
@@ -124,11 +126,16 @@ function callback(results, status) {
  * @param  {Array} updateMarkerArray  array consisting of markerList obj
  */
 function createMarker(googlePlace, updateMarkerArray) {
+    var myLatLng = new google.maps.LatLng(googlePlace.geometry.location.lat(), googlePlace.geometry.location.lng());
+
     var marker = new google.maps.Marker({
         map: map,
         animation: google.maps.Animation.DROP,
         position: googlePlace.geometry.location
     });
+
+    // add the marker in bounds obj
+    bounds.extend(myLatLng);
 
     if (updateMarkerArray) {
         var markerList = {};
@@ -234,6 +241,10 @@ function markerInfoWindow() {
 
         // trigger marker click event on 'li' click event
         addLiListener(markerObj, googleObj.name);
+
+        // define map view to include all
+        // markers in any screen size
+        fitMarkersInMapView();
     }
 }
 
@@ -247,6 +258,19 @@ function addLiListener(marker, locName) {
         google.maps.event.trigger(marker, 'click');
     });
 }
+
+/**
+ * fit map markers in viewport
+ */
+function fitMarkersInMapView() {
+    map.fitBounds(bounds);
+}
+
+/**
+ * call fitMarkersInMapView func
+ * on win resize event
+ */
+window.onresize = fitMarkersInMapView;
 
 // initiate
 makeMap();
