@@ -14,9 +14,31 @@ body {
     height: 100%;
 }
 
+.col-md-3,
+.col-md-9 {
+    padding: 0px;
+}
+
+
+/**
+ * map CSS styles
+ */
+
 #map {
     height: 100%;
 }
+
+.pin {
+    padding-left: 20px;
+    background-image: url('../images/rsz_pin.png');
+    background-repeat: no-repeat;
+    background-position: 5px;
+}
+
+
+/**
+ * infowindow CSS styles
+ */
 
 #infowindow * {
     /*text-align: center;*/
@@ -65,24 +87,24 @@ body {
     margin-left: 50%;
 }
 
+
+/**
+ * leftNavigation CSS styles
+ */
+
+#leftNav {
+    font-family: 'Open Sans', sans-serif;
+    color: #767676;
+}
+
 #leftNav * {
     /*border: solid black 1px !important;*/
     text-align: left;
 }
 
-.col-md-3,
-.col-md-9 {
-    padding: 0px;
-}
-
 #leftNavFilterArea {
     /*padding: 5px;*/
     padding-left: 20px;
-}
-
-#leftNav {
-    font-family: 'Open Sans', sans-serif;
-    color: #767676;
 }
 
 #heading h2 {
@@ -103,11 +125,4 @@ li {
 
 li:hover {
     color: #4285f4;
-}
-
-.pin {
-    padding-left: 20px;
-    background-image: url('../images/rsz_pin.png');
-    background-repeat: no-repeat;
-    background-position: 5px;
 }
