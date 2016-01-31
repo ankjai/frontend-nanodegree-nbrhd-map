@@ -10,7 +10,7 @@ body {
 
 .container-fluid,
 .row,
-.col-md-9 {
+.col-md-12 {
     height: 100%;
 }
 
@@ -26,6 +26,7 @@ body {
 
 #map {
     height: 100%;
+    width: 100%;
 }
 
 .pin {

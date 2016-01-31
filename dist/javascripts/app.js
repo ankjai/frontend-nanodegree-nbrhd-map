@@ -240,7 +240,7 @@ function markerInfoWindow() {
         });
 
         // trigger marker click event on 'li' click event
-        addLiListener(markerObj, googleObj.name);
+        // addLiListener(markerObj, googleObj.name);
 
         // define map view to include all
         // markers in any screen size
