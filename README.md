@@ -54,7 +54,10 @@ Shows each searched locations as markers, each marker can be clicked and shows u
 
 #### Responsive Layout
 
-###### Phone
+###### Phone - Portrait View
 Features are responsive on mobile platform.
 
 ![](https://cloud.githubusercontent.com/assets/6732675/12705126/f98a54f8-c81f-11e5-85fc-0a6e21bfe9d4.gif)
+
+###### Phone - Landscape View
+![](https://cloud.githubusercontent.com/assets/6732675/12705145/5cecbc48-c820-11e5-9747-032d418e8ed2.gif)
