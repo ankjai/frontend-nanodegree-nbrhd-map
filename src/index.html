@@ -7,9 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/main.min.css">
     <link rel="stylesheet" href="javascripts/libs/bootstrap-3.3.6-dist/css/bootstrap.min.css">
-    <script src="javascripts/libs/knockoutjs/knockout-3.4.0.js"></script>
-    <script src="javascripts/libs/jquery/jquery-2.1.4.min.js"></script>
-    <script src="javascripts/libs/bootstrap-3.3.6-dist/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -61,15 +58,9 @@
             </div>
         </div>
     </div>
-    <script>
-    // Returns width of browser viewport
-    var wid = $(window).width();
-    if (wid >= 768) {
-        $("#leftNavMob").remove();
-    } else if (wid < 768) {
-        $("#leftNav").remove();
-    };
-    </script>
+    <script src="javascripts/libs/knockoutjs/knockout-3.4.0.js"></script>
+    <script src="javascripts/libs/jquery/jquery-2.1.4.min.js"></script>
+    <script src="javascripts/libs/bootstrap-3.3.6-dist/js/bootstrap.min.js"></script>
     <!-- Prod Scripts -->
     <script src="javascripts/app.js"></script>
     <!-- Dev Scripts -->
