@@ -57,4 +57,4 @@ Shows each searched locations as markers, each marker can be clicked and shows u
 ###### Phone
 Features are responsive on mobile platform.
 
-![](https://cloud.githubusercontent.com/assets/6732675/12705092/e40c2d96-c81e-11e5-89f9-fe99e91f4fce.gif)
+![](https://cloud.githubusercontent.com/assets/6732675/12705126/f98a54f8-c81f-11e5-85fc-0a6e21bfe9d4.gif)
