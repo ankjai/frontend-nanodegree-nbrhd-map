@@ -10,7 +10,7 @@ body {
 
 .container-fluid,
 .row,
-.col-md-12 {
+.col-md-9 {
     height: 100%;
 }
 
@@ -21,19 +21,29 @@ body {
 
 
 /**
+ * @media to make nav responsive
+ */
+
+@media (min-width: 768px) {
+    #leftNavMob {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    #leftNav {
+        display: none;
+    }
+}
+
+
+/**
  * map CSS styles
  */
 
 #map {
     height: 100%;
     width: 100%;
-}
-
-.pin {
-    padding-left: 20px;
-    background-image: url('../images/rsz_pin.png');
-    background-repeat: no-repeat;
-    background-position: 5px;
 }
 
 
@@ -126,4 +136,11 @@ li {
 
 li:hover {
     color: #4285f4;
+}
+
+.pin {
+    padding-left: 20px;
+    background-image: url('../images/rsz_pin.png');
+    background-repeat: no-repeat;
+    background-position: 5px;
 }

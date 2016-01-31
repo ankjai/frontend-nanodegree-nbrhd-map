@@ -145,6 +145,7 @@ function buildLocDetailsObj(textStatus, responseMessage, place, results) {
  * create markerInfoWindow on markers
  */
 function markerInfoWindow() {
+    "use strict";
     for (var x = 0; x < markerArray.length; x++) {
         // 'let' keyword to define variables inside this block
         // and avoid bugs caused bcoz of creation of anonymous func
@@ -197,7 +198,7 @@ function markerInfoWindow() {
         });
 
         // trigger marker click event on 'li' click event
-        // addLiListener(markerObj, googleObj.name);
+        addLiListener(markerObj, googleObj.name);
 
         // define map view to include all
         // markers in any screen size
