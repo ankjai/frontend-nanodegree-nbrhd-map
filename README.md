@@ -15,7 +15,12 @@ npm install
 ```
 from inside the app directory (i.e. where package.json is located) will install the dependencies for this app. These will be placed in ./node_modules relative to package.json file (it's slightly more complex than this, so check the npm docs [here](https://docs.npmjs.com/files/folders#more-information)).
 
-Now by running
+To run the build process, just do
+```
+grunt
+```
+
+and now by running
 ```
 grunt connect
 ```
