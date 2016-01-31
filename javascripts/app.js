@@ -102,6 +102,11 @@ function initMap(textStatus, errorMessage) {
  */
 function callback(results, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
+        // remove nav/li element depending
+        // upon viewport before creating markers
+        // and updating left nav restaurants list
+        removeNavElement();
+        
         for (var i = 0; i < results.length; i++) {
             // make async calls to
             // first create markers
@@ -121,9 +126,25 @@ function callback(results, status) {
 }
 
 /**
+ * for addLiListener() to work correctly
+ * we should remove the li element depending 
+ * upon the viewport
+ */
+function removeNavElement() {
+    // Returns width of browser viewport
+    var wid = $(window).width();
+
+    if (wid > 768) {
+        $("#leftNavMob").remove();
+    } else if (wid <= 768) {
+        $("#leftNav").remove();
+    }
+}
+
+/**
  * create map marker objs
- * @param  {Object} googlePlace       place obj
- * @param  {Array} updateMarkerArray  array consisting of markerList obj
+ * @param  {Object} googlePlace         place obj
+ * @param  {boolean} updateMarkerArray  to update global markerArray
  */
 function createMarker(googlePlace, updateMarkerArray) {
     var myLatLng = new google.maps.LatLng(googlePlace.geometry.location.lat(), googlePlace.geometry.location.lng());
