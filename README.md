@@ -15,7 +15,12 @@ npm install
 ```
 from inside the app directory (i.e. where package.json is located) will install the dependencies for this app. These will be placed in ./node_modules relative to package.json file (it's slightly more complex than this, so check the npm docs [here](https://docs.npmjs.com/files/folders#more-information)).
 
-Now by running
+To run the build process, just do
+```
+grunt
+```
+
+and now by running
 ```
 grunt connect
 ```
@@ -44,3 +49,15 @@ Shows locations that have been searched for, additionally clicking on location a
 ###### Map
 Shows each searched locations as markers, each marker can be clicked and shows unique information about a location in infowindow. Marker shows bouncing animation when clicked.
 ![](https://cloud.githubusercontent.com/assets/6732675/12529392/d690d200-c168-11e5-8ddc-db3b3c958ffc.gif)
+
+
+
+#### Responsive Layout
+
+###### Phone - Portrait View
+Features are responsive on mobile platform.
+
+![](https://cloud.githubusercontent.com/assets/6732675/12705126/f98a54f8-c81f-11e5-85fc-0a6e21bfe9d4.gif)
+
+###### Phone - Landscape View
+![](https://cloud.githubusercontent.com/assets/6732675/12705145/5cecbc48-c820-11e5-9747-032d418e8ed2.gif)
