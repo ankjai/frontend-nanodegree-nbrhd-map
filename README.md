@@ -49,3 +49,10 @@ Shows locations that have been searched for, additionally clicking on location a
 ###### Map
 Shows each searched locations as markers, each marker can be clicked and shows unique information about a location in infowindow. Marker shows bouncing animation when clicked.
 ![](https://cloud.githubusercontent.com/assets/6732675/12529392/d690d200-c168-11e5-8ddc-db3b3c958ffc.gif)
+
+
+
+#### Responsive Layout
+###### Phone
+Features are responsive on mobile platform.
+![](https://cloud.githubusercontent.com/assets/6732675/12705092/e40c2d96-c81e-11e5-89f9-fe99e91f4fce.gif)
